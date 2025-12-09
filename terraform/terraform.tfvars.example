@@ -1,0 +1,34 @@
+# Example terraform.tfvars file
+# Copy this file to terraform.tfvars and update with your values
+# DO NOT commit terraform.tfvars to version control
+
+project_name       = "ecommerce"
+environment        = "prod"
+location           = "East US"
+kubernetes_version = "1.28.0"
+
+# Node configuration
+node_count     = 3
+node_vm_size   = "Standard_D2s_v3"
+min_node_count = 2
+max_node_count = 10
+
+# Database configuration
+postgres_admin_username = "psqladmin"
+postgres_admin_password = "YourSecurePassword123!"  # Change this!
+postgres_sku            = "B_Gen5_1"
+postgres_storage_mb     = 51200
+
+# Redis configuration
+redis_capacity = 1
+redis_family   = "C"
+redis_sku_name = "Standard"
+
+# Tags
+tags = {
+  Project     = "E-commerce"
+  ManagedBy   = "Terraform"
+  Environment = "Production"
+  Owner       = "Your Name"
+  CostCenter  = "Engineering"
+}
