@@ -1,4 +1,11 @@
-# Resource Group
+# Random suffix for globally unique names
+resource "random_string" "suffix" {
+  length  = 6
+  special = false
+  upper   = false
+}
+
+# Azure Resource Group
 resource "azurerm_resource_group" "main" {
   name     = "${var.project_name}-${var.environment}-rg"
   location = var.location
@@ -22,9 +29,9 @@ resource "azurerm_subnet" "aks_subnet" {
   address_prefixes     = ["10.0.1.0/24"]
 }
 
-# Azure Container Registry
+# Azure Container Registry (ACR)
 resource "azurerm_container_registry" "acr" {
-  name                = "${var.project_name}${var.environment}acr"
+  name                = "${var.project_name}${var.environment}acr${random_string.suffix.result}"
   resource_group_name = azurerm_resource_group.main.name
   location            = azurerm_resource_group.main.location
   sku                 = var.acr_sku
@@ -113,13 +120,13 @@ resource "azurerm_postgresql_firewall_rule" "allow_azure" {
 
 # Redis Cache
 resource "azurerm_redis_cache" "redis" {
-  name                = "${var.project_name}-${var.environment}-redis"
+  name                = "${var.project_name}-${var.environment}-redis-${random_string.suffix.result}"
   location            = azurerm_resource_group.main.location
   resource_group_name = azurerm_resource_group.main.name
   capacity            = var.redis_capacity
   family              = var.redis_family
   sku_name            = var.redis_sku_name
-  enable_non_ssl_port = false
+  non_ssl_port_enabled = false
   minimum_tls_version = "1.2"
 
   redis_configuration {
@@ -131,7 +138,7 @@ resource "azurerm_redis_cache" "redis" {
 
 # Storage Account for static assets
 resource "azurerm_storage_account" "storage" {
-  name                     = "${var.project_name}${var.environment}storage"
+  name                     = "${var.project_name}${var.environment}st${random_string.suffix.result}"
   resource_group_name      = azurerm_resource_group.main.name
   location                 = azurerm_resource_group.main.location
   account_tier             = "Standard"
@@ -152,7 +159,7 @@ data "azurerm_client_config" "current" {}
 
 # Azure Key Vault for secrets management
 resource "azurerm_key_vault" "kv" {
-  name                       = "${var.project_name}-${var.environment}-kv"
+  name                       = "${var.project_name}-${var.environment}-kv-${random_string.suffix.result}"
   location                   = azurerm_resource_group.main.location
   resource_group_name        = azurerm_resource_group.main.name
   tenant_id                  = data.azurerm_client_config.current.tenant_id
