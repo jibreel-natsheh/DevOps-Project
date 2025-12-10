@@ -43,6 +43,8 @@ resource "helm_release" "prometheus" {
   chart            = "kube-prometheus-stack"
   namespace        = "monitoring"
   create_namespace = true
+  timeout          = 900
+  wait             = false
 
   set {
     name  = "prometheus.prometheusSpec.serviceMonitorSelectorNilUsesHelmValues"
