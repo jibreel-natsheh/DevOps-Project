@@ -25,25 +25,25 @@ variable "kubernetes_version" {
 variable "node_count" {
   description = "The initial number of nodes in the AKS cluster"
   type        = number
-  default     = 3
+  default     = 1
 }
 
 variable "node_vm_size" {
   description = "The VM size for AKS nodes"
   type        = string
-  default     = "Standard_D2s_v3"
+  default     = "Standard_DC2s_v3"
 }
 
 variable "min_node_count" {
   description = "Minimum number of nodes for autoscaling"
   type        = number
-  default     = 2
+  default     = 1
 }
 
 variable "max_node_count" {
   description = "Maximum number of nodes for autoscaling"
   type        = number
-  default     = 10
+  default     = 3
 }
 
 variable "acr_sku" {
