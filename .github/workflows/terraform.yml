@@ -163,12 +163,15 @@ jobs:
       uses: actions/download-artifact@v4
       with:
         name: terraform-outputs
+        path: ./
         
     - name: Get AKS credentials
       run: |
+        RESOURCE_GROUP=$(jq -r '.resource_group_name.value' terraform-outputs.json)
+        CLUSTER_NAME=$(jq -r '.aks_cluster_name.value' terraform-outputs.json)
         az aks get-credentials \
-          --resource-group ${{ secrets.AKS_RESOURCE_GROUP }} \
-          --name ${{ secrets.AKS_CLUSTER_NAME }} \
+          --resource-group $RESOURCE_GROUP \
+          --name $CLUSTER_NAME \
           --overwrite-existing
           
     - name: Update ConfigMaps and Secrets
