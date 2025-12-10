@@ -183,7 +183,7 @@ resource "azurerm_key_vault" "kv" {
 # Store database connection string in Key Vault
 resource "azurerm_key_vault_secret" "db_connection" {
   name         = "database-connection-string"
-  value        = "postgresql://${var.postgres_admin_username}:${var.postgres_admin_password}@${azurerm_postgresql_server.postgres.fqdn}:5432/${azurerm_postgresql_database.db.name}?sslmode=require"
+  value        = "postgresql://${var.postgres_admin_username}:${var.postgres_admin_password}@${azurerm_postgresql_flexible_server.postgres.fqdn}:5432/${azurerm_postgresql_flexible_server_database.db.name}?sslmode=require"
   key_vault_id = azurerm_key_vault.kv.id
 }
 
