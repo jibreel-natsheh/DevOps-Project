@@ -67,6 +67,8 @@ resource "azurerm_kubernetes_cluster" "aks" {
     network_plugin    = "azure"
     load_balancer_sku = "standard"
     network_policy    = "azure"
+    service_cidr      = "10.1.0.0/16"
+    dns_service_ip    = "10.1.0.10"
   }
 
   tags = var.tags
@@ -80,43 +82,36 @@ resource "azurerm_role_assignment" "aks_acr" {
   skip_service_principal_aad_check = true
 }
 
-# PostgreSQL Server
-resource "azurerm_postgresql_server" "postgres" {
+# PostgreSQL Flexible Server
+resource "azurerm_postgresql_flexible_server" "postgres" {
   name                = "${var.project_name}-${var.environment}-postgres"
   location            = azurerm_resource_group.main.location
   resource_group_name = azurerm_resource_group.main.name
 
-  sku_name = var.postgres_sku
-
-  storage_mb                   = var.postgres_storage_mb
-  backup_retention_days        = 7
-  geo_redundant_backup_enabled = false
-  auto_grow_enabled            = true
-
-  administrator_login          = var.postgres_admin_username
-  administrator_login_password = var.postgres_admin_password
-  version                      = "11"
-  ssl_enforcement_enabled      = true
+  administrator_login    = var.postgres_admin_username
+  administrator_password = var.postgres_admin_password
+  version                = "13"
+  sku_name               = "B_Standard_B1ms"
+  storage_mb             = 32768
+  backup_retention_days  = 7
 
   tags = var.tags
 }
 
 # PostgreSQL Database
-resource "azurerm_postgresql_database" "db" {
-  name                = "${var.project_name}_db"
-  resource_group_name = azurerm_resource_group.main.name
-  server_name         = azurerm_postgresql_server.postgres.name
-  charset             = "UTF8"
-  collation           = "English_United States.1252"
+resource "azurerm_postgresql_flexible_server_database" "db" {
+  name      = "${var.project_name}_db"
+  server_id = azurerm_postgresql_flexible_server.postgres.id
+  charset   = "UTF8"
+  collation = "en_US.utf8"
 }
 
 # PostgreSQL Firewall Rule (Allow Azure Services)
-resource "azurerm_postgresql_firewall_rule" "allow_azure" {
-  name                = "allow-azure-services"
-  resource_group_name = azurerm_resource_group.main.name
-  server_name         = azurerm_postgresql_server.postgres.name
-  start_ip_address    = "0.0.0.0"
-  end_ip_address      = "0.0.0.0"
+resource "azurerm_postgresql_flexible_server_firewall_rule" "allow_azure" {
+  name             = "allow-azure-services"
+  server_id        = azurerm_postgresql_flexible_server.postgres.id
+  start_ip_address = "0.0.0.0"
+  end_ip_address   = "0.0.0.0"
 }
 
 # Redis Cache
@@ -131,7 +126,7 @@ resource "azurerm_redis_cache" "redis" {
   minimum_tls_version = "1.2"
 
   redis_configuration {
-    enable_authentication = true
+    authentication_enabled = "true"
   }
 
   tags = var.tags
