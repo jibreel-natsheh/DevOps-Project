@@ -45,7 +45,8 @@ resource "azurerm_kubernetes_cluster" "aks" {
   location            = azurerm_resource_group.main.location
   resource_group_name = azurerm_resource_group.main.name
   dns_prefix          = "${var.project_name}-${var.environment}"
-  kubernetes_version  = var.kubernetes_version
+  # Don't specify kubernetes_version to use latest stable default
+  sku_tier            = "Free"
 
   default_node_pool {
     name                = "default"
