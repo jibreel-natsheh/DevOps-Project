@@ -189,9 +189,13 @@ jobs:
         # Apply all Kubernetes manifests first
         kubectl apply -f k8s/ --namespace=ecommerce
         
+        # Get short SHA for image tag (matches what docker/metadata-action creates)
+        SHORT_SHA=$(echo ${{ github.sha }} | cut -c1-7)
+        BRANCH_NAME=${GITHUB_REF#refs/heads/}
+        
         # Update image tag in deployment to use the newly built image
         kubectl set image deployment/ecommerce-app \
-          ecommerce-app=${{ secrets.ACR_LOGIN_SERVER }}/${{ env.IMAGE_NAME }}:${{ github.sha }} \
+          ecommerce-app=${{ secrets.ACR_LOGIN_SERVER }}/${{ env.IMAGE_NAME }}:${BRANCH_NAME}-${SHORT_SHA} \
           --namespace=ecommerce --record
         
     - name: Wait for deployment rollout
