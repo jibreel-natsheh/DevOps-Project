@@ -180,6 +180,7 @@ jobs:
           --from-literal=JWT_SECRET="${{ secrets.JWT_SECRET }}" \
           --from-literal=SESSION_SECRET="${{ secrets.SESSION_SECRET }}" \
           --from-literal=STRIPE_SECRET_KEY="${{ secrets.STRIPE_SECRET_KEY }}" \
+          --from-literal=AZURE_STORAGE_KEY="${{ secrets.AZURE_STORAGE_KEY }}" \
           --namespace=ecommerce \
           --dry-run=client -o yaml | kubectl apply -f -
           
