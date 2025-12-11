@@ -185,13 +185,13 @@ jobs:
           
     - name: Deploy to AKS
       run: |
-        # Update image tag in deployment
+        # Apply all Kubernetes manifests first
+        kubectl apply -f k8s/ --namespace=ecommerce
+        
+        # Update image tag in deployment to use the newly built image
         kubectl set image deployment/ecommerce-app \
           ecommerce-app=${{ secrets.ACR_LOGIN_SERVER }}/${{ env.IMAGE_NAME }}:${{ github.sha }} \
-          --namespace=ecommerce
-          
-        # Apply all Kubernetes manifests
-        kubectl apply -f k8s/ --namespace=ecommerce
+          --namespace=ecommerce --record
         
     - name: Wait for deployment rollout
       run: |
