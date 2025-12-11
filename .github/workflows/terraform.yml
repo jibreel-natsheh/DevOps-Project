@@ -93,21 +93,6 @@ jobs:
       with:
         creds: ${{ secrets.AZURE_CREDENTIALS }}
         
-    - name: Clean up existing resource group if needed
-      run: |
-        if az group exists --name ecommerce-prod-rg | grep -q "true"; then
-          echo "Resource group exists, deleting to start fresh..."
-          az group delete --name ecommerce-prod-rg --yes --no-wait
-          echo "Waiting for deletion to complete..."
-          while az group exists --name ecommerce-prod-rg | grep -q "true"; do
-            echo "Still deleting..."
-            sleep 10
-          done
-          echo "Resource group deleted successfully"
-        else
-          echo "Resource group does not exist, proceeding with deployment"
-        fi
-        
     - name: Terraform Init
       working-directory: ${{ env.WORKING_DIR }}
       run: terraform init
