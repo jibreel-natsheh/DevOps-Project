@@ -106,7 +106,12 @@ Before you begin, ensure you have installed:
 ### Step 1: Clone and Explore
 
 ```bash
-# Clone the repositorygit clone https://github.com/jibreel-natsheh/DevOps-Project.gitcd DevOps-Project# Explore the project structurels -la
+# Clone the repository
+git clone https://github.com/jibreel-natsheh/DevOps-Project.git
+cd DevOps-Project
+
+# Explore the project structure
+ls -la
 ```
 
 **📁 Key Directories to Explore:**
@@ -121,7 +126,20 @@ Before you begin, ensure you have installed:
 ### Step 2: Run Locally (Docker)
 
 ```bash
-# Start the application with Docker Composedocker-compose up -d# View running containersdocker ps# View logsdocker-compose logs -f app# Visit the application# Open browser: http://localhost:3000# Stop when donedocker-compose down
+# Start the application with Docker Compose
+docker-compose up -d
+
+# View running containers
+docker ps
+
+# View logs
+docker-compose logs -f app
+
+# Visit the application
+# Open browser: http://localhost:3000
+
+# Stop when done
+docker-compose down
 ```
 
 **🎯 Learning Exercise:**
@@ -133,7 +151,17 @@ Before you begin, ensure you have installed:
 ### Step 3: Explore Kubernetes Manifests
 
 ```bash
-# View Kubernetes configuration filesls k8s/# Examine the deploymentcat k8s/deployment.yml# Examine the servicecat k8s/service.yml# Examine the ingresscat k8s/ingress.yml
+# View Kubernetes configuration files
+ls k8s/
+
+# Examine the deployment
+cat k8s/deployment.yml
+
+# Examine the service
+cat k8s/service.yml
+
+# Examine the ingress
+cat k8s/ingress.yml
 ```
 
 **🎯 Learning Exercise:**
@@ -145,7 +173,14 @@ Before you begin, ensure you have installed:
 ### Step 4: Study the CI/CD Pipeline
 
 ```bash
-# View GitHub Actions workflowsls .github/workflows/# Examine CI/CD pipelinecat .github/workflows/ci-cd.yml# Examine Terraform workflowcat .github/workflows/terraform.yml
+# View GitHub Actions workflows
+ls .github/workflows/
+
+# Examine CI/CD pipeline
+cat .github/workflows/ci-cd.yml
+
+# Examine Terraform workflow
+cat .github/workflows/terraform.yml
 ```
 
 **🎯 Learning Points:**
@@ -157,7 +192,17 @@ Before you begin, ensure you have installed:
 ### Step 5: Understand Infrastructure as Code
 
 ```bash
-# View Terraform filesls terraform/# Main infrastructure definitioncat terraform/resources.tf# Variablescat terraform/variables.tf# Outputs (like connection strings)cat terraform/outputs.tf
+# View Terraform files
+ls terraform/
+
+# Main infrastructure definition
+cat terraform/resources.tf
+
+# Variables
+cat terraform/variables.tf
+
+# Outputs (like connection strings)
+cat terraform/outputs.tf
 ```
 
 **🎯 What Terraform Creates:**
@@ -232,7 +277,16 @@ Code Push → GitHub Actions Triggered    ↓Build & Test (Docker-based tests)  
 ### Option 1: Node.js Development Server (Fastest for Development)
 
 ```bash
-# Install dependenciesnpm install --legacy-peer-deps# Create environment file (optional for basic features)cp .env.example .env.local# Run development server with hot reloadnpm run dev# Visit http://localhost:3000
+# Install dependencies
+npm install --legacy-peer-deps
+
+# Create environment file (optional for basic features)
+cp .env.example .env.local
+
+# Run development server with hot reload
+npm run dev
+
+# Visit http://localhost:3000
 ```
 
 **Use this when:** You're actively developing and want instant hot-reload.
@@ -240,7 +294,19 @@ Code Push → GitHub Actions Triggered    ↓Build & Test (Docker-based tests)  
 ### Option 2: Docker Compose (Closest to Production)
 
 ```bash
-# Build and start all servicesdocker-compose up --build# Run in backgrounddocker-compose up -d# View logsdocker-compose logs -f app# Stop servicesdocker-compose down# Visit http://localhost:3000
+# Build and start all services
+docker-compose up --build
+
+# Run in background
+docker-compose up -d
+
+# View logs
+docker-compose logs -f app
+
+# Stop services
+docker-compose down
+
+# Visit http://localhost:3000
 ```
 
 **Use this when:** You want to test the containerized version locally.
@@ -248,7 +314,13 @@ Code Push → GitHub Actions Triggered    ↓Build & Test (Docker-based tests)  
 ### Option 3: Docker Only
 
 ```bash
-# Build the imagedocker build -t ecommerce-app .# Run the containerdocker run -p 3000:3000 ecommerce-app# Visit http://localhost:3000
+# Build the image
+docker build -t ecommerce-app .
+
+# Run the container
+docker run -p 3000:3000 ecommerce-app
+
+# Visit http://localhost:3000
 ```
 
 ## ☁️ Deploying to Azure
@@ -267,7 +339,23 @@ Click the "Fork" button on GitHub to create your own copy.
 ### Step 2: Provision Azure Infrastructure
 
 ```bash
-# Login to Azureaz login# Navigate to terraform directorycd terraform# Initialize Terraformterraform init# Review the infrastructure planterraform plan# Apply (create resources) - Takes ~10-15 minutesterraform apply# Save the outputs (ACR name, AKS name, etc.)terraform output
+# Login to Azure
+az login
+
+# Navigate to terraform directory
+cd terraform
+
+# Initialize Terraform
+terraform init
+
+# Review the infrastructure plan
+terraform plan
+
+# Apply (create resources) - Takes ~10-15 minutes
+terraform apply
+
+# Save the outputs (ACR name, AKS name, etc.)
+terraform output
 ```
 
 **💰 Cost Estimate:** ~$50-100/month with Free tier AKS
@@ -279,13 +367,35 @@ Go to your GitHub repository → Settings → Secrets and variables → Actions
 Add these secrets (get values from Terraform outputs):
 
 ```bash
-# Azure Container RegistryACR_LOGIN_SERVER=<your-acr-name>.azurecr.ioACR_USERNAME=<from: az acr credential show>ACR_PASSWORD=<from: az acr credential show># Azure Kubernetes ServiceAKS_CLUSTER_NAME=ecommerce-prod-aksAKS_RESOURCE_GROUP=ecommerce-prod-rg# Azure Service Principal (for Terraform)AZURE_CREDENTIALS=<JSON from: az ad sp create-for-rbac># Application Secrets (generate your own)DATABASE_URL=<from terraform output>JWT_SECRET=<generate: openssl rand -base64 32>SESSION_SECRET=<generate: openssl rand -base64 32>STRIPE_SECRET_KEY=<your stripe key or dummy>AZURE_STORAGE_KEY=<from terraform output>
+# Azure Container Registry
+ACR_LOGIN_SERVER=<your-acr-name>.azurecr.io
+ACR_USERNAME=<from: az acr credential show>
+ACR_PASSWORD=<from: az acr credential show>
+# Azure Kubernetes Service
+AKS_CLUSTER_NAME=ecommerce-prod-aks
+AKS_RESOURCE_GROUP=ecommerce-prod-rg
+# Azure Service Principal (for Terraform)
+AZURE_CREDENTIALS=<JSON from: az ad sp create-for-rbac>
+# Application Secrets (generate your own)
+DATABASE_URL=<from terraform output>
+JWT_SECRET=<generate: openssl rand -base64 32>
+SESSION_SECRET=<generate: openssl rand -base64 32>
+STRIPE_SECRET_KEY=<your stripe key or dummy>
+AZURE_STORAGE_KEY=<from terraform output>
 ```
 
 ### Step 4: Configure Terraform Backend (Recommended)
 
 ```bash
-# Create storage for Terraform stateaz storage account create   --name <unique-name>tfstate   --resource-group ecommerce-prod-rg   --sku Standard_LRSaz storage container create   --name tfstate   --account-name <unique-name>tfstate
+# Create storage for Terraform state
+az storage account create \
+  --name <unique-name>tfstate \
+  --resource-group ecommerce-prod-rg \
+  --sku Standard_LRS
+
+az storage container create \
+  --name tfstate \
+  --account-name <unique-name>tfstate
 ```
 
 Update `terraform/backend.tf` with your storage account details.
@@ -293,13 +403,34 @@ Update `terraform/backend.tf` with your storage account details.
 ### Step 5: Deploy via CI/CD
 
 ```bash
-# Push code to master branchgit add .git commit -m "Initial deployment"git push origin master# GitHub Actions will automatically:# 1. Build Docker image# 2. Run security scans# 3. Push to ACR# 4. Deploy to AKS
+# Push code to master branch
+git add .
+git commit -m "Initial deployment"
+git push origin master
+
+# GitHub Actions will automatically:
+# 1. Build Docker image
+# 2. Run security scans
+# 3. Push to ACR
+# 4. Deploy to AKS
 ```
 
 ### Step 6: Access Your Deployment
 
 ```bash
-# Get AKS credentialsaz aks get-credentials   --resource-group ecommerce-prod-rg   --name ecommerce-prod-aks# Check deployment statuskubectl get pods -n ecommercekubectl get services -n ecommercekubectl get ingress -n ecommerce# Get the public IP addresskubectl get ingress -n ecommerce# Look for the ADDRESS column
+# Get AKS credentials
+az aks get-credentials \
+  --resource-group ecommerce-prod-rg \
+  --name ecommerce-prod-aks
+
+# Check deployment status
+kubectl get pods -n ecommerce
+kubectl get services -n ecommerce
+kubectl get ingress -n ecommerce
+
+# Get the public IP address
+kubectl get ingress -n ecommerce
+# Look for the ADDRESS column
 ```
 
 Visit `http://<EXTERNAL-IP>` to see your deployed application!
@@ -309,25 +440,48 @@ Visit `http://<EXTERNAL-IP>` to see your deployed application!
 ### Viewing Logs
 
 ```bash
-# View application logskubectl logs -n ecommerce -l app=ecommerce --tail=100 -f# View specific podkubectl logs -n ecommerce <pod-name> -f
+# View application logs
+kubectl logs -n ecommerce -l app=ecommerce --tail=100 -f
+
+# View specific pod
+kubectl logs -n ecommerce <pod-name> -f
 ```
 
 ### Scaling the Application
 
 ```bash
-# Manual scalingkubectl scale deployment ecommerce-app --replicas=5 -n ecommerce# Check HPA status (auto-scaling)kubectl get hpa -n ecommerce
+# Manual scaling
+kubectl scale deployment ecommerce-app --replicas=5 -n ecommerce
+
+# Check HPA status (auto-scaling)
+kubectl get hpa -n ecommerce
 ```
 
 ### Updating the Application
 
 ```bash
-# Make code changes# Commit and pushgit add .git commit -m "Updated feature X"git push# CI/CD automatically deploys the new version# Monitor the rollout:kubectl rollout status deployment/ecommerce-app -n ecommerce
+# Make code changes
+# Commit and push
+git add .
+git commit -m "Updated feature X"
+git push
+
+# CI/CD automatically deploys the new version
+# Monitor the rollout:
+kubectl rollout status deployment/ecommerce-app -n ecommerce
 ```
 
 ### Rolling Back a Deployment
 
 ```bash
-# View rollout historykubectl rollout history deployment/ecommerce-app -n ecommerce# Rollback to previous versionkubectl rollout undo deployment/ecommerce-app -n ecommerce# Rollback to specific revisionkubectl rollout undo deployment/ecommerce-app --to-revision=2 -n ecommerce
+# View rollout history
+kubectl rollout history deployment/ecommerce-app -n ecommerce
+
+# Rollback to previous version
+kubectl rollout undo deployment/ecommerce-app -n ecommerce
+
+# Rollback to specific revision
+kubectl rollout undo deployment/ecommerce-app --to-revision=2 -n ecommerce
 ```
 
 ## 📚 Documentation
@@ -544,7 +698,8 @@ Persistent storage for Redis
 **Issue**: `npm ci` or peer dependency errors
 
 ```bash
-# Solution: Use legacy peer deps flag (already in Dockerfile)npm install --legacy-peer-deps
+# Solution: Use legacy peer deps flag (already in Dockerfile)
+npm install --legacy-peer-deps
 ```
 
 #### Pods Not Starting (ImagePullBackOff)
@@ -552,7 +707,17 @@ Persistent storage for Redis
 **Issue**: Can't pull image from ACR
 
 ```bash
-# Check ACR credentialsaz acr credential show --name <acr-name># Verify role assignment existsaz role assignment list --scope /subscriptions/<sub-id>/resourceGroups/<rg>/providers/Microsoft.ContainerRegistry/registries/<acr-name># Create role assignment manually if neededaz role assignment create   --assignee <aks-kubelet-identity>   --role AcrPull   --scope <acr-id>
+# Check ACR credentials
+az acr credential show --name <acr-name>
+
+# Verify role assignment exists
+az role assignment list --scope /subscriptions/<sub-id>/resourceGroups/<rg>/providers/Microsoft.ContainerRegistry/registries/<acr-name>
+
+# Create role assignment manually if needed
+az role assignment create \
+  --assignee <aks-kubelet-identity> \
+  --role AcrPull \
+  --scope <acr-id>
 ```
 
 #### Application Returns 404
@@ -560,7 +725,14 @@ Persistent storage for Redis
 **Issue**: Ingress not routing to the service
 
 ```bash
-# Check ingress configurationkubectl describe ingress ecommerce-ingress -n ecommerce# Verify service endpointskubectl get endpoints ecommerce-service -n ecommerce# Check NGINX ingress controller podskubectl get pods -n ingress-nginx
+# Check ingress configuration
+kubectl describe ingress ecommerce-ingress -n ecommerce
+
+# Verify service endpoints
+kubectl get endpoints ecommerce-service -n ecommerce
+
+# Check NGINX ingress controller pods
+kubectl get pods -n ingress-nginx
 ```
 
 #### Deployment Timeout in CI/CD
@@ -568,7 +740,11 @@ Persistent storage for Redis
 **Issue**: Image tag mismatch between push and deployment
 
 ```bash
-# Check available tags in ACRaz acr repository show-tags --name <acr-name> --repository ecommerce# Verify the tag format matches in ci-cd.yml (should use short SHA)# Fixed in line 195: Uses SHORT_SHA=$(echo ${{ github.sha }} | cut -c1-7)
+# Check available tags in ACR
+az acr repository show-tags --name <acr-name> --repository ecommerce
+
+# Verify the tag format matches in ci-cd.yml (should use short SHA)
+# Fixed in line 195: Uses SHORT_SHA=$(echo ${{ github.sha }} | cut -c1-7)
 ```
 
 #### Database Connection Errors
@@ -576,7 +752,16 @@ Persistent storage for Redis
 **Issue**: Can't connect to PostgreSQL
 
 ```bash
-# Verify DATABASE_URL secret existskubectl get secret ecommerce-secrets -n ecommerce -o yaml# Check firewall rulesaz postgres flexible-server firewall-rule list   --resource-group <rg>   --name <postgres-server># Verify pods can reach databasekubectl exec -it <pod-name> -n ecommerce -- wget -O- <database-host>:5432
+# Verify DATABASE_URL secret exists
+kubectl get secret ecommerce-secrets -n ecommerce -o yaml
+
+# Check firewall rules
+az postgres flexible-server firewall-rule list \
+  --resource-group <rg> \
+  --name <postgres-server>
+
+# Verify pods can reach database
+kubectl exec -it <pod-name> -n ecommerce -- wget -O- <database-host>:5432
 ```
 
 #### Terraform Apply Fails
@@ -584,13 +769,43 @@ Persistent storage for Redis
 **Issue**: Resource naming conflicts or quota issues
 
 ```bash
-# Common fixes:# 1. Change region if quota exceeded# 2. Use random suffix for globally unique names (already implemented)# 3. Check Azure subscription limits# View Terraform stateterraform state list# Remove stuck resourcesterraform state rm <resource-name>
+# Common fixes:
+# 1. Change region if quota exceeded
+# 2. Use random suffix for globally unique names (already implemented)
+# 3. Check Azure subscription limits
+
+# View Terraform state
+terraform state list
+
+# Remove stuck resources
+terraform state rm <resource-name>
 ```
 
 ### Debug Commands Cheat Sheet
 
 ```bash
-# Check pod status and eventskubectl get pods -n ecommercekubectl describe pod <pod-name> -n ecommerce# View application logskubectl logs -f <pod-name> -n ecommerce# Check all resources in namespacekubectl get all -n ecommerce# Port forward for local testingkubectl port-forward svc/ecommerce-service 8080:80 -n ecommerce# Execute commands in podkubectl exec -it <pod-name> -n ecommerce -- /bin/sh# View secrets (base64 encoded)kubectl get secret ecommerce-secrets -n ecommerce -o json# Check resource usagekubectl top nodeskubectl top pods -n ecommerce
+# Check pod status and events
+kubectl get pods -n ecommerce
+kubectl describe pod <pod-name> -n ecommerce
+
+# View application logs
+kubectl logs -f <pod-name> -n ecommerce
+
+# Check all resources in namespace
+kubectl get all -n ecommerce
+
+# Port forward for local testing
+kubectl port-forward svc/ecommerce-service 8080:80 -n ecommerce
+
+# Execute commands in pod
+kubectl exec -it <pod-name> -n ecommerce -- /bin/sh
+
+# View secrets (base64 encoded)
+kubectl get secret ecommerce-secrets -n ecommerce -o json
+
+# Check resource usage
+kubectl top nodes
+kubectl top pods -n ecommerce
 ```
 
 ```
