@@ -217,8 +217,6 @@ cat terraform/outputs.tf
 
 ## ✨ Application Features
 
-## ✨ Application Features
-
 ### E-commerce Functionality
 
 -   **Product Catalog** - Browse products with filtering and search
@@ -244,7 +242,28 @@ cat terraform/outputs.tf
 **Dockerfile (Multi-stage Build):**
 
 ```dockerfile
-# Stage 1: Dependencies - Install packagesFROM node:18-alpine AS depsWORKDIR /appCOPY package*.json ./RUN npm ci --legacy-peer-deps || npm install --legacy-peer-deps# Stage 2: Builder - Build the applicationFROM node:18-alpine AS builderWORKDIR /appCOPY --from=deps /app/node_modules ./node_modulesCOPY . .RUN npm run build# Stage 3: Runner - Production image (smallest size)FROM node:18-alpine AS runnerWORKDIR /appENV NODE_ENV productionCOPY --from=builder /app/public ./publicCOPY --from=builder /app/.next ./.nextCOPY --from=builder /app/node_modules ./node_modulesCOPY --from=builder /app/package.json ./package.jsonCMD ["npm", "start"]
+# Stage 1: Dependencies - Install packages
+FROM node:18-alpine AS deps
+WORKDIR /app
+COPY package*.json ./
+RUN npm ci --legacy-peer-deps || npm install --legacy-peer-deps
+
+# Stage 2: Builder - Build the application
+FROM node:18-alpine AS builder
+WORKDIR /app
+COPY --from=deps /app/node_modules ./node_modules
+COPY . .
+RUN npm run build
+
+# Stage 3: Runner - Production image (smallest size)
+FROM node:18-alpine AS runner
+WORKDIR /app
+ENV NODE_ENV production
+COPY --from=builder /app/public ./public
+COPY --from=builder /app/.next ./.next
+COPY --from=builder /app/node_modules ./node_modules
+COPY --from=builder /app/package.json ./package.json
+CMD ["npm", "start"]
 ```
 
 **Why Multi-stage?**
@@ -267,10 +286,22 @@ cat terraform/outputs.tf
 ### Understanding CI/CD Flow
 
 ```
-Code Push → GitHub Actions Triggered    ↓Build & Test (Docker-based tests)    ↓Security Scan (Trivy)    ↓Build Docker Image    ↓Push to Azure Container Registry    ↓Deploy to AKS (kubectl set image)    ↓Verify Deployment (rollout status)    ↓Post-deployment Tests
+Code Push → GitHub Actions Triggered
+    ↓
+Build & Test (Docker-based tests)
+    ↓
+Security Scan (Trivy)
+    ↓
+Build Docker Image
+    ↓
+Push to Azure Container Registry
+    ↓
+Deploy to AKS (kubectl set image)
+    ↓
+Verify Deployment (rollout status)
+    ↓
+Post-deployment Tests
 ```
-
-## 🏃 Running Locally
 
 ## 🏃 Running Locally
 
