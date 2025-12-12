@@ -6,8 +6,7 @@ metadata:
   annotations:
     kubernetes.io/ingress.class: nginx
     cert-manager.io/cluster-issuer: letsencrypt-prod
-    nginx.ingress.kubernetes.io/ssl-redirect: "true"
-    nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
+    nginx.ingress.kubernetes.io/ssl-redirect: "false"
     nginx.ingress.kubernetes.io/proxy-body-size: "50m"
     nginx.ingress.kubernetes.io/rate-limit: "100"
 spec:
@@ -16,6 +15,17 @@ spec:
     - ecommerce.yourdomain.com
     secretName: ecommerce-tls
   rules:
+  # Rule for direct IP access (no hostname)
+  - http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: ecommerce-service
+            port:
+              number: 80
+  # Rule for domain access
   - host: ecommerce.yourdomain.com
     http:
       paths:
